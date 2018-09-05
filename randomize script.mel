@@ -1,0 +1,64 @@
+global proc string Flower() {
+    string $objects[]; //contains list of transform objects
+    string $sels[];
+    $sels = `polySphere -r 1 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1 -name "Base"`;
+    $objects [0] = $sels [0];
+    $sels = `duplicate -rr -name "petal_01" Base`;
+    move -r -os -wd 1 .2 0 petal_01;
+    $objects [1] = $sels [0];
+    $sels = `duplicate -rr -name "petal_02" Base`;
+    move -r -os -wd (-1) .2 0 petal_02;
+    $objects [2] = $sels [0];
+    $sels = `duplicate -rr -name "petal_03" Base`;
+    move -r -os -wd 0 .2 1 petal_03;
+    $objects [3] = $sels [0];
+    $sels = `duplicate -rr -name "petal_04" Base`;
+    move -r -os -wd 0 .2 (-1) petal_04;
+    $objects [4] = $sels [0];
+    $sels = `polyUnite -ch 1 -mergeUVSets 1 -centerPivot -name "FlowerTop" $objects`;
+    delete -ch $objects;
+    select -r FlowerTop ;
+    scale -r 1 0.5 1 ;
+    $objects [0] = $sels [0];
+    polyCylinder -r .3 -h 5 -sx 10 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1 -name "Stem";
+    $sels = `ls -selection`; //contains list of selections
+    $objects [1] = $sels [0];
+    
+    move -r -os -wd 0 5 0 $objects[0];
+    move -r -os-wd 0 2.5 0 $objects[1];
+
+    $objects = `polyUnite -ch 1 -mergeUVSets 1 -centerPivot -name "Flower" $objects` ;
+
+    delete -ch $objects;
+
+    return $objects[0];
+}
+
+global proc string[] DuplicateFlowers() {
+    string $Flowers[];
+    string $obj = `Flower`;
+    int $randNum = rand (1, 100);
+    for ($i=0; $i <$randNum; $i++){
+        string $temp[];
+        $temp = `duplicate -rr $obj`;
+        $Flowers[$i] = $temp [0];
+    }
+    print("Duplicated " + $obj + " " + $randNum + " times!");
+    return $Flowers;
+}
+
+global proc MoveDuplicates() {
+    string $dupes[] = `DuplicateFlowers`;
+    for($pretties in $dupes){
+        int $x = rand(1, 20);
+        int $y = rand(1, 2);
+        int $z = rand(1, 20);
+        move -r $x $y $z $pretties;
+    }
+}
+
+MoveDuplicates(); 
+
+
+
+
