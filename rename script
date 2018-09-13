@@ -1,55 +1,28 @@
-ls -selection
-global proc rename(string "name_##_suffix")
-select the things, then based on the order you select them it'll number it.
-putting everything in an array library, renaming
-Look for _ and everything to the left of the first one will be $name and everything to the right of the last one 
-will be $suffix
-count how many #s there are
-
-	 helpful string things:
-		*Tokenize -->splits strings
-		starts with/ends with
-		strip-->removes white space from start and ends
-		match
-		compare
-		*substitute-->replacing characters
-		Substring-->finds index position
-		
-		**number padding
-	 
-proc renamer(string $input){
-	 list selection
-sel[]  
-loop through sel[]
-	$i = 1 --> format to match num of digits
-	 concatenate strings adding incrementing number (such as    "hello " + $name)
-	 rename selection
-}
-
-
-global proc string Selection() {
-    string $sels[];
-    $sels = `ls -selection`; 
-}
-
-
-
 global proc renamer(int $number, string $split){
 
 	string $sels[];
-    $sels = `ls -selection`; 
-
-
+    $sels = `ls -selection`;
+	
+	string $num;
+	
 	string $nams[];
-		tokenize $split "_" $nams[];
-		$nams [1] = $number;
+		tokenize $split "#" $nams;
 		
-	string $new = $nams[0] + "_" + $nams [1] + "_" + $nams[2];
-	return $new;
-
-
-
+		int $numsize = size($split) - (size($nams [0]) + size($nams [1]));
+		
+    for($things in $sels){
+		$num = $number;
+		int $size = $numsize - size($num);
+	
+		for($i=0;$i<$size;$i++){
+			$num = "0" + $num;
+		}
+	
+	string $new = $nams[0] + $num + $nams [1];
+	
+	rename $things $new;
+	
+	$number++;
+    }
 }
-renamer (01, arm_##_jnt)
-
-
+renamer (01, "L_arm_##_jnt");
