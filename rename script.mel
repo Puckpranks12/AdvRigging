@@ -1,0 +1,28 @@
+global proc renamer(int $number, string $split){
+
+	string $sels[];
+    $sels = `ls -selection`;
+	
+	string $num;
+	
+	string $nams[];
+		tokenize $split "#" $nams;
+		
+		int $numsize = size($split) - (size($nams [0]) + size($nams [1]));
+		
+    for($things in $sels){
+		$num = $number;
+		int $size = $numsize - size($num);
+	
+		for($i=0;$i<$size;$i++){
+			$num = "0" + $num;
+		}
+	
+	string $new = $nams[0] + $num + $nams [1];
+	
+	rename $things $new;
+	
+	$number++;
+    }
+}
+renamer (01, "L_arm_##_jnt");
