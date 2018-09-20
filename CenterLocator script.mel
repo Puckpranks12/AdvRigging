@@ -1,0 +1,38 @@
+global proc string CenterLocator(){
+	//assign selection to an array
+	string $sels[] = `ls -sl`;
+	//duplicating the selection as a temp object
+	//and assigning to new array
+	string $temp[] = `duplicate -rr $sels`;
+	
+	//checking whether more than one object is selected
+	//if yes, combine to a single object for the bounding box query
+	if(size($temp) > 1)
+	$temp = `polyUnite $temp`;
+	
+	float $bbPos[];
+	//query the bounding box min and max values for temp object
+	//and assign to float array
+	$bbPos = `xform -q -boundingBox $temp`;
+	//delete history of temp object
+	delete -ch $temp[0];
+	//delete the temp object
+	delete $temp[0];
+	
+	//find the center of x,y, and z coordinates of the bounding box
+	float $xPos, $yPos, $zPos;
+	$xPos = ($bbPos[0]+$bbPos[3]) / 2;
+	$yPos = ($bbPos[1]+$bbPos[4]) / 2;
+	$zPos = ($bbPos[2]+$bbPos[5]) / 2;
+	
+	//create a locator at 0,0,0
+	string $loc[] = `spaceLocator -position 0 0 0`;
+	//move the locator to world space position of the center
+	//of the bounding box calculated before
+	xform -translation $xPos $yPos $zPos -worldSpace -absolute $loc[0];
+	
+	//return the locator name
+	return $loc[0];
+}
+
+CenterLocator();

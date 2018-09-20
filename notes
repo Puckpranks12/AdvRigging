@@ -8,4 +8,6 @@
 		Substring-->finds index position
 		
 	 
-
+//Put the script in documents-maya-scripts folder 
+//and then in maya script editor do   
+source CenterLocator
