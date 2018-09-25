@@ -1,0 +1,72 @@
+/* Pseudocode
+Creating Controls
+	Match control xforms(Translate and rotate) to selection(If no selection @origin)
+	Renaming according to selection w/ _Ctrl as suffix
+	*making groups(xforms, naming w/ _Ctrl_Grp as suffix)
+		Group
+		find Xforms
+		create groupsparent selection
+	*Optional shapes
+		createControl
+		Square/diamond/etc.
+	*(Constrain selection to ctrl)
+	
+*Control Coloring
+	UI
+
+CONTROL COLORING
+proc ColorControls($color(string/value), $Ctrl)
+	enable overrides on $Ctrl
+	Set color on $Ctrl to $color
+
+CONTROL CREATION
+
+CONTROL SHAPE
+
+CONTROL GROUPING
+
+CONTROL CONSTRAINING
+
+
+*/
+
+global proc CreateControls(int $color){
+	string $sels[] = `ls -sl`;
+	
+	for($sel in $sels){
+		string $ctrls[] = `circle -name ($sel + "_Ctrl")`;
+		string $ctrl = $ctrls[0];
+	
+		ColorControls($ctrl, $color);
+	}
+}
+
+global proc ColorControls(string $ctrl, int $color)
+{
+	//sets color index of control
+	
+	//define string array for shapes
+	string $shapes[];
+
+	//find the shape node[s] of $ctrl
+	$shapes = `listRelatives -shapes $ctrl`;
+	
+	for ($shape in $shapes)
+	{
+		//checks if nodetype is a nurbs curve
+		if (`nodeType $shape` == "nurbsCurve"){
+			//enable overrides on $shape
+			setAttr ($shape + ".overrideEnabled") 1;
+
+			//set color on $shape to $color
+			setAttr($shape + ".overrideColor") $color;	
+		}
+		else
+		{
+			warning("Selected object is not a curve.");
+		}
+	}
+}
+
+CreateControls(18);
+
