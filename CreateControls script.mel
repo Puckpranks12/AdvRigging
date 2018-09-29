@@ -1,49 +1,18 @@
-/* Pseudocode
-Creating Controls
-	Match control xforms(Translate and rotate) to selection(If no selection @origin)
-	Renaming according to selection w/ _Ctrl as suffix
-	*making groups(xforms, naming w/ _Ctrl_Grp as suffix)
-		Group
-		find Xforms
-		create groupsparent selection
-	*Optional shapes
-		createControl
-		Square/diamond/etc.
-	*(Constrain selection to ctrl)
-	
-*Control Coloring
-	UI
-
-CONTROL COLORING
-proc ColorControls($color(string/value), $Ctrl)
-	enable overrides on $Ctrl
-	Set color on $Ctrl to $color
-
-CONTROL CREATION
-
-CONTROL SHAPE
-	Square	curve -d 1 -p -0.5 0 3.470844 -p -0.5 0 4.470843 -p 0.5 0 4.470843 -p 0.5 0 3.470844 -p -0.5 0 3.470844 -k 0 -k 1 -k 2 -k 3 -k 4 ;
-	Diamond	curve -d 1 -p 0 0 3.36644 -p -0.366504 0 3.970844 -p 0 0 4.575247 -p 0.366504 0 3.970844 -p 0 0 3.36644 -k 0 -k 1 -k 2 -k 3 -k 4 ;
-	Flower	curve -d 3 -p 0.00316829 0 6.090031 -p -0.0454706 0 6.194755 -p -0.142748 0 6.404202 -p -0.0532278 0 6.752826 -p 0.331597 0 6.885565 -p 0.81247 0 6.724864 -p 0.334751 0 6.552492 -p -0.0433585 0 6.704744 -p -0.161316 0 6.953625 -p 0.00643457 0 7.556084 -p 0.170806 0 7.038393 -p 0.0276257 0 6.683013 -p -0.281309 0 6.554645 -p -0.819014 0 6.726818 -p -0.256067 0 6.87748 -p 0.0224327 0 6.77186 -p 0.166336 0 6.360172 -p 0.0575577 0 6.180078 -p 0.00316829 0 6.090032 -k 0 -k 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16 -k 16 -k 16 ;
-	Circle	circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -tol 0.01 -s 8 -ch 1; objectMoveCommand;
-
-
-
-CONTROL GROUPING
-
-CONTROL CONSTRAINING
-
-
-*/
-
-global proc CreateControls(int $color){
+global proc CreateControls(int $color, string $shape){
 	string $sels[] = `ls -sl`;
 	
-	for($sel in $sels){
-		string $ctrls[] = `circle -name ($sel + "_Ctrl")`;
-		string $ctrl = $ctrls[0];
-		GroupControls($ctrl, $sel);
-		ColorControls($ctrl, $color);
+	if(size ($sels) >= 1){
+		for($sel in $sels){
+			string $ctrls =  ShapeControl($shape, ($sel + "_Ctrl")); 
+			string $ctrl = $ctrls;
+			ColorControls($ctrl, $color);
+			GroupControls($ctrl, $sel);
+		}
+	}else{
+			string $ctrls = ShapeControl($shape, "_Ctrl");
+			string $ctrl = $ctrls;
+			ColorControls($ctrl, $color);
+			GroupControls($ctrl, "");
 	}
 }
 
@@ -54,7 +23,7 @@ global proc ColorControls(string $ctrl, int $color){
 	string $shapes[];
 
 	//find the shape node[s] of $ctrl
-	$shapes = `listRelatives -shapes $ctrl`;
+	$shapes = `listRelatives -shapes -path $ctrl`;
 	
 	for ($shape in $shapes)
 	{
@@ -75,9 +44,12 @@ global proc ColorControls(string $ctrl, int $color){
 
 global proc MoveControls (string $moved, string $sel){
 	//moves control groups to their proper places/rotations
-	
+	if($sel != ""){
 	//matches the transforms of the thing moved to the selection
 	matchTransform $moved $sel;
+	}else{
+		objectMoveCommand;
+	}
 }
 
 global proc GroupControls (string $ctrl, string $sel){
@@ -88,25 +60,30 @@ global proc GroupControls (string $ctrl, string $sel){
 	MoveControls($moved, $sel);
 }
 
-
-CreateControls(18);
-
-
-
-
-
-
-global proc ShapeControl(string $controlShape){
+global proc string ShapeControl(string $controlShape, string $name){
 	//changes control shape
-	if ($controlShape == "circle"){
-	
+	string $shape[];
+	//checks if it's a circle input
+	if ($controlShape == "Circle"){
+	$shape = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -tol 0.01 -s 8 -ch 1 -name $name`; 
+	//checks if it's a Square input
+	}else if($controlShape == "Square"){
+	$shape[0] = `curve -d 1 -p -0.5 0 3.470844 -p -0.5 0 4.470843 -p 0.5 0 4.470843 -p 0.5 0 3.470844 -p -0.5 0 3.470844 -k 0 -k 1 -k 2 -k 3 -k 4 -name $name`;
+	//checks if it's a Diamond input
+	}else if($controlShape == "Diamond"){
+	$shape[0] = `curve -d 1 -p 0 0 3.36644 -p -0.366504 0 3.970844 -p 0 0 4.575247 -p 0.366504 0 3.970844 -p 0 0 3.36644 -k 0 -k 1 -k 2 -k 3 -k 4 -name $name`;
+	//checks if it's a Flower input
+	}else if($controlShape == "Flower"){
+	$shape[0] = `curve -d 3 -p 0.00316829 0 6.090031 -p -0.0454706 0 6.194755 -p -0.142748 0 6.404202 -p -0.0532278 0 6.752826 -p 0.331597 0 6.885565 -p 0.81247 0 6.724864 -p 0.334751 0 6.552492 -p -0.0433585 0 6.704744 -p -0.161316 0 6.953625 -p 0.00643457 0 7.556084 -p 0.170806 0 7.038393 -p 0.0276257 0 6.683013 -p -0.281309 0 6.554645 -p -0.819014 0 6.726818 -p -0.256067 0 6.87748 -p 0.0224327 0 6.77186 -p 0.166336 0 6.360172 -p 0.0575577 0 6.180078 -p 0.00316829 0 6.090032 -k 0 -k 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16 -k 16 -k 16 -name $name`;
+	//checks if it's a wrong or missing input
 	}else{
-	
-	
+		warning ("Shape does not exist");
 	}
+	return $shape[0];
 }
 
-ShapeControl();
+CreateControls(18, "Square");
+
 
 
 
