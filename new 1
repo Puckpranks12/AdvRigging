@@ -1,0 +1,60 @@
+/*UI
+Heirarchy is extremely important
+
+Layouts determine how stuff in your windows are organized
+Your window HAS TO CONTAIN A LAYOUT(At least one)
+
+Dock control also is a kind of window where you can dock it in the viewport of maya
+
+*/
+/*
+string $mainWindow = "Anna's Window";
+if(`window -exists $mainWindow`){
+	deleteUI $mainWindow;
+} 
+
+
+
+button -parent $mColumn "rename" -command "renamer(01, L_arm_##_jnt)";
+button -parent $mColumn "Create Controls";
+button -parent $mColumn -label "Parent Group";
+
+floatField
+button -parent $mainColumn "Generate";
+
+	string $myFloatField = `floatField -minValue -10 -maxValue 10 -value 0`;
+	
+	float $value = `floatField -query -value $myFloatField`;
+	
+showWindow $window;
+
+global proc float FloatFieldQuery(string $controlName, string $attr)
+{
+	float $value = `floatField -q ("-" + $attr) $controlName`;
+	return $value;
+}
+
+FloatFieldQuery ($myFloatField, "value");
+*/
+
+global proc RenamerUI()
+{
+
+
+
+
+}
+
+global proc controlCreatorUI()
+{
+
+
+
+
+
+}
+
+
+
+
+

@@ -1,0 +1,46 @@
+global proc GeneratorUI()
+{
+	string $mainWindow = "RandomPlacementWindow";
+
+	if(`window -exists $mainWindow`)
+	{
+		deleteUI $mainWindow;
+	}
+
+	$mainWindow = `window -title "Random Placement Generator" $mainWindow`;
+	string $mainCol = `columnLayout -parent $mainWindow -adjustableColumn 1`;
+	//create first row for duplicate fields
+	string $dupRowLayout = `-parent $mainCol rowLayout -numberOfColumns 2 -adjustableColumn 2 -columnAttach -columnOffset`;
+		text -parent $dupRowLayout -label "Duplicate";
+		string $dupIntField = `intField -parent $dupRowLayout -minValue 1 -value 7`;
+	//create second row for range values
+	string $rangeRowLayout = `-parent $mainCol rowLayout -numberOfColumns 4`;
+		text -parent $rangeRowLayout -label "Range";
+		string $xRange = `floatField -parent $rangeRowLayout -value 0`;
+		string $yRange = `floatField -parent $rangeRowLayout -value 0`;
+		string $zRange = `floatField -parent $rangeRowLayout -value 0`;
+	//create a button to execute the command
+	string $button = `button -parent $mainCol -label "Generate" -command `;
+	
+	showWindow $mainWindow;
+}
+
+global proc RenamerUI()
+{
+
+
+
+
+}
+
+global proc controlCreatorUI()
+{
+
+
+
+
+
+}
+
+
+
