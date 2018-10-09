@@ -24,23 +24,52 @@ global proc GeneratorUI()
 	
 	showWindow $mainWindow;
 }
+GeneratorUI();
 
 global proc RenamerUI()
 {
+string $renameWindow = `window`;
+	if(`window -exists $renameWindow`)
+	{
+		deleteUI $renameWindow;
+	}
 
+$renameWindow = `window -title "Renamer" $renameWindow`;
+rowColumnLayout -numberOfColumns 2 -columnAttach 1 "right" 0  -columnWidth 1 100 -columnWidth 2 250;
+text -label "Starting Number";
+string $startNum = `textField`;
+text -label "Name";
+string $name = `textField`;
 
+textField -edit -enterCommand ("setFocus " + $name) $startNum;
 
+showWindow $renameWindow;
 
 }
+RenamerUI();
 
-global proc controlCreatorUI()
+
+global proc ControlCreatorUI()
 {
 
+string $controlWindow = `window`;
+	if(`window -exists $controlWindow`)
+	{
+		deleteUI $controlWindow;
+	}
+
+$controlWindow = `window -title "Control Generator" $controlWindow`;
+rowColumnLayout -numberOfColumns 2 -columnAttach 1 "right" 0 -columnWidth 1 100 -columnWidth 2 250;
+text -label "Color Number";
+string $colNum = `textField`;
+text -label "Shape";
+string $shape = `textField`;
+
+textField -edit -enterCommand ("setFocus " + $shape) $colNum;
 
 
-
+showWindow $controlWindow;
 
 }
-
-
+ControlCreatorUI();
 
