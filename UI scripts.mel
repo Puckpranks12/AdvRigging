@@ -10,17 +10,17 @@ global proc GeneratorUI()
 	$mainWindow = `window -title "Random Placement Generator" $mainWindow`;
 	string $mainCol = `columnLayout -parent $mainWindow -adjustableColumn 1`;
 	//create first row for duplicate fields
-	string $dupRowLayout = `-parent $mainCol rowLayout -numberOfColumns 2 -adjustableColumn 2 -columnAttach -columnOffset`;
+	string $dupRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn2 2 -columnAttach2 "left" "right" -columnOffset2 1 2`;
 		text -parent $dupRowLayout -label "Duplicate";
 		string $dupIntField = `intField -parent $dupRowLayout -minValue 1 -value 7`;
 	//create second row for range values
-	string $rangeRowLayout = `-parent $mainCol rowLayout -numberOfColumns 4`;
+	string $rangeRowLayout = `rowLayout -numberOfColumns 4 -parent $mainCol `;
 		text -parent $rangeRowLayout -label "Range";
 		string $xRange = `floatField -parent $rangeRowLayout -value 0`;
 		string $yRange = `floatField -parent $rangeRowLayout -value 0`;
 		string $zRange = `floatField -parent $rangeRowLayout -value 0`;
 	//create a button to execute the command
-	string $button = `button -parent $mainCol -label "Generate" -command `;
+	string $button = `button -parent $mainCol -label "Generate"`;
 	
 	showWindow $mainWindow;
 }
@@ -37,7 +37,7 @@ string $renameWindow = `window`;
 $renameWindow = `window -title "Renamer" $renameWindow`;
 rowColumnLayout -numberOfColumns 2 -columnAttach 1 "right" 0  -columnWidth 1 100 -columnWidth 2 250;
 text -label "Starting Number";
-string $startNum = `textField`;
+string $startNum = `intField -parent $rowColumnLayout -minValue 1`;
 text -label "Name";
 string $name = `textField`;
 
@@ -61,7 +61,7 @@ string $controlWindow = `window`;
 $controlWindow = `window -title "Control Generator" $controlWindow`;
 rowColumnLayout -numberOfColumns 2 -columnAttach 1 "right" 0 -columnWidth 1 100 -columnWidth 2 250;
 text -label "Color Number";
-string $colNum = `textField`;
+string $colNum = `intField -parent $rowColumnLayout -minValue 1`;
 text -label "Shape";
 string $shape = `textField`;
 

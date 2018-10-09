@@ -6,54 +6,78 @@ Your window HAS TO CONTAIN A LAYOUT(At least one)
 
 Dock control also is a kind of window where you can dock it in the viewport of maya
 
+\" makes it so you can insert quotes into a string
+
 */
+
+
+//attaching scripts to the UI script
+
+global proc GeneratorUI()
+{
+	string $mainWindow = "RandomPlacementWindow";
+
+	if(`window -exists $mainWindow`)
+	{
+		deleteUI $mainWindow;
+	}
+
+	$mainWindow = `window -title "Random Placement Generator" $mainWindow`;
+	string $mainCol = `columnLayout -parent $mainWindow -adjustableColumn 1`;
+
+	//create first row for duplicate fields
+	string $dupRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn 2`;
+		text -parent $dupRowLayout -label "Duplicate";
+		string $dupIntField = `intField -parent $dupRowLayout -minValue 1 -value 7`;
+
+		//create second row for range values
+	string $rangeRowLayout = `rowLayout -parent $mainCol -numberOfColumns 4`;
+		text -parent $rangeRowLayout -label "Range";
+		string $xRange = `floatField -parent $rangeRowLayout -value 0`;
+		string $yRange = `floatField -parent $rangeRowLayout -value 0`;
+		string $zRange = `floatField -parent $rangeRowLayout -value 0`;
+
+		//create a button to execute the command
+	string $button = `button -parent $mainCol -label "Generate" -command ("MoveObj(\"" + $xRange + "\", \"" + $yRange + "\", \"" + $zRange + "\")")`;
+	
+	showWindow $mainWindow;
+}
+
+//the script we're attaching
+global proc MoveObj (string $xName, string $yName, string $zName)
+{
+	//get selection
+	string $sels[] = `ls -selection`;
+	
+	//query values of float fields and assign to variables
+	float $xVal = `GetFloatFieldValue ($xName)`;
+	float $yVal = `GetFloatFieldValue ($yName)`;
+	float $zVal = `GetFloatFieldValue ($zName)`;
+
+	//move object(s) as defined in UI
+	move $xVal $yVal $zVal -relative $sels;
+
+}
+
+global proc float GetFloatFieldValue (string$control)
+{
+	float $value = `floatField -query -value $control`;
+	return $value;	
+}
+
+GeneratorUI();
+
+
 /*
-string $mainWindow = "Anna's Window";
-if(`window -exists $mainWindow`){
-	deleteUI $mainWindow;
-} 
-
-
-
-button -parent $mColumn "rename" -command "renamer(01, L_arm_##_jnt)";
-button -parent $mColumn "Create Controls";
-button -parent $mColumn -label "Parent Group";
-
-floatField
-button -parent $mainColumn "Generate";
-
-	string $myFloatField = `floatField -minValue -10 -maxValue 10 -value 0`;
+Attaching the script to the UI:
+**You want to avoid making variables global as much as possible**
 	
-	float $value = `floatField -query -value $myFloatField`;
-	
-showWindow $window;
+**Add the -command flag to the button 
 
-global proc float FloatFieldQuery(string $controlName, string $attr)
-{
-	float $value = `floatField -q ("-" + $attr) $controlName`;
-	return $value;
-}
 
-FloatFieldQuery ($myFloatField, "value");
+
+
 */
-
-global proc RenamerUI()
-{
-
-
-
-
-}
-
-global proc controlCreatorUI()
-{
-
-
-
-
-
-}
-
 
 
 
