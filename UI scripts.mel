@@ -9,67 +9,282 @@ global proc GeneratorUI()
 
 	$mainWindow = `window -title "Random Placement Generator" $mainWindow`;
 	string $mainCol = `columnLayout -parent $mainWindow -adjustableColumn 1`;
+
 	//create first row for duplicate fields
-	string $dupRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn2 2 -columnAttach2 "left" "right" -columnOffset2 1 2`;
+	string $dupRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn 2`;
 		text -parent $dupRowLayout -label "Duplicate";
 		string $dupIntField = `intField -parent $dupRowLayout -minValue 1 -value 7`;
-	//create second row for range values
-	string $rangeRowLayout = `rowLayout -numberOfColumns 4 -parent $mainCol `;
+
+		//create second row for range values
+	string $rangeRowLayout = `rowLayout -parent $mainCol -numberOfColumns 4`;
 		text -parent $rangeRowLayout -label "Range";
 		string $xRange = `floatField -parent $rangeRowLayout -value 0`;
 		string $yRange = `floatField -parent $rangeRowLayout -value 0`;
 		string $zRange = `floatField -parent $rangeRowLayout -value 0`;
-	//create a button to execute the command
-	string $button = `button -parent $mainCol -label "Generate"`;
+
+		//create a button to execute the command
+	string $button = `button -parent $mainCol -label "Generate" -command ("MoveDuplicates(\"" + $dupIntField + "\", \"" + $xRange + "\", \"" + $yRange + "\", \"" + $zRange + "\")")`;
 	
 	showWindow $mainWindow;
 }
+
+global proc string Selection() {
+    string $objects; 
+    string $sels[];
+    $sels = `ls -selection`;
+    $objects = $sels [0];
+    return $objects;
+}
+
+global proc string[] DuplicateObjects(int $dupNum) {
+    string $Items[];
+    string $obj = `Selection`;
+    for ($i=0; $i <$dupNum; $i++){
+        string $temp[];
+        $temp = `duplicate -rr $obj`;
+        $Items[$i] = $temp [0];
+    }
+    return $Items;
+}
+
+global proc float GetFloatFieldValue (string $control)
+{
+	float $value = `floatField -query -value $control`;
+	return $value;	
+}
+
+global proc int GetIntFieldValue (string $control)
+{
+	int $value = `intField -query -value $control`;
+	return $value;	
+}
+
+global proc MoveDuplicates(string $numDup, string $xName, string $yName, string $zName) {
+    int $numberDup = `GetIntFieldValue ($numDup)`;
+	string $dupes[] = `DuplicateObjects($numberDup)`;
+
+	float $xRange = `GetFloatFieldValue ($xName)`;
+	float $yRange = `GetFloatFieldValue ($yName)`;
+	float $zRange = `GetFloatFieldValue ($zName)`;
+
+    for($things in $dupes){
+        int $x = rand(-$xRange, $xRange);
+        int $y = rand(-$yRange, $yRange);
+        int $z = rand(-$zRange, $zRange);
+        move -r $x $y $z $things;
+    }
+}
+
 GeneratorUI();
+
+
+/*
+*/
+
 
 global proc RenamerUI()
 {
-string $renameWindow = `window`;
-	if(`window -exists $renameWindow`)
+	string $mainWindow = "RenamerWindow";
+
+	if(`window -exists $mainWindow`)
 	{
-		deleteUI $renameWindow;
+		deleteUI $mainWindow;
 	}
 
-$renameWindow = `window -title "Renamer" $renameWindow`;
-rowColumnLayout -numberOfColumns 2 -columnAttach 1 "right" 0  -columnWidth 1 100 -columnWidth 2 250;
-text -label "Starting Number";
-string $startNum = `intField -parent $rowColumnLayout -minValue 1`;
-text -label "Name";
-string $name = `textField`;
+	$mainWindow = `window -title "Renamer" $mainWindow`;
+	string $mainCol = `columnLayout -parent $mainWindow -adjustableColumn 1`;
 
-textField -edit -enterCommand ("setFocus " + $name) $startNum;
+	//create first row for start # fields
+	string $numRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn 2`;
+		text -parent $numRowLayout -label "Starting Number";
+		string $numIntField = `intField -parent $numRowLayout -minValue 1 -value 1`;
 
-showWindow $renameWindow;
+		//create second row for rename string
+	string $namRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn 2`;
+		text -parent $namRowLayout -label "Name";
+		string $newName = `textField -parent $namRowLayout`;
 
+		//create a button to execute the command
+	string $button = `button -parent $mainCol -label "Rename" -command ("renamer(\"" + $numIntField + "\", \"" + $newName + "\")")`;
+	
+	showWindow $mainWindow;
 }
+
+global proc int GetIntFieldValue (string $control)
+{
+	int $value = `intField -query -value $control`;
+	return $value;	
+}
+
+global proc string GetTextFieldValue (string $control)
+{
+	string $value = `textField -query -text $control`;
+	return $value;	
+}
+
+global proc renamer(string $number, string $split){
+
+    int $numStart = `GetIntFieldValue ($number)`;
+	string $splitter = `GetTextFieldValue ($split)`;
+	
+	string $sels[];
+    $sels = `ls -selection`;
+	
+	string $num;
+	
+	string $nams[];
+		tokenize $splitter "#" $nams;
+		
+		int $numsize = size($splitter) - (size($nams [0]) + size($nams [1]));
+		
+    for($things in $sels){
+		$num = $numStart;
+		int $size = $numsize - size($num);
+	
+		for($i=0;$i<$size;$i++){
+			$num = "0" + $num;
+		}
+	
+	string $new = $nams[0] + $num + $nams [1];
+	
+	rename $things $new;
+	
+	$numStart++;
+    }
+}
+
 RenamerUI();
 
+/*
+*/
 
 global proc ControlCreatorUI()
 {
+	string $mainWindow = "ControlsWindow";
 
-string $controlWindow = `window`;
-	if(`window -exists $controlWindow`)
+	if(`window -exists $mainWindow`)
 	{
-		deleteUI $controlWindow;
+		deleteUI $mainWindow;
 	}
 
-$controlWindow = `window -title "Control Generator" $controlWindow`;
-rowColumnLayout -numberOfColumns 2 -columnAttach 1 "right" 0 -columnWidth 1 100 -columnWidth 2 250;
-text -label "Color Number";
-string $colNum = `intField -parent $rowColumnLayout -minValue 1`;
-text -label "Shape";
-string $shape = `textField`;
+	$mainWindow = `window -title "Control Creator" $mainWindow`;
+	string $mainCol = `columnLayout -parent $mainWindow -adjustableColumn 1`;
 
-textField -edit -enterCommand ("setFocus " + $shape) $colNum;
+	//create first row for Color # fields
+	string $colorRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn 2`;
+		text -parent $colorRowLayout -label "Color Number";
+		string $colorIntField = `intField -parent $colorRowLayout -minValue 1 -value 7`;
 
+		//create second row for Shape string
+	string $shapeRowLayout = `rowLayout -parent $mainCol -numberOfColumns 2 -adjustableColumn 2`;
+		text -parent $shapeRowLayout -label "Shape";
+		string $shapeName = `textField -parent $shapeRowLayout`;
 
-showWindow $controlWindow;
-
+		//create a button to execute the command
+	string $button = `button -parent $mainCol -label "Create Controls" -command ("CreateControls(\"" + $colorIntField + "\", \"" + $shapeName + "\")")`;
+	
+	showWindow $mainWindow;
 }
-ControlCreatorUI();
 
+
+global proc int GetIntFieldValue (string $control)
+{
+	int $value = `intField -query -value $control`;
+	return $value;	
+}
+
+global proc string GetTextFieldValue (string $control)
+{
+	string $value = `textField -query -text $control`;
+	return $value;	
+}
+
+global proc CreateControls(string $color, string $shape){
+	
+	int $colorer = `GetIntFieldValue ($color)`;
+	string $shaper = `GetTextFieldValue ($shape)`;
+	
+	string $sels[] = `ls -sl`;
+	
+	if(size ($sels) >= 1){
+		for($sel in $sels){
+			string $ctrls =  ShapeControl($shaper, ($sel + "_Ctrl")); 
+			string $ctrl = $ctrls;
+			ColorControls($ctrl, $colorer);
+			GroupControls($ctrl, $sel);
+		}
+	}else{
+			string $ctrls = ShapeControl($shaper, "_Ctrl");
+			string $ctrl = $ctrls;
+			ColorControls($ctrl, $colorer);
+			GroupControls($ctrl, "");
+	}
+}
+
+global proc ColorControls(string $ctrl, int $color){
+	//sets color index of control
+	
+	//define string array for shapes
+	string $shapes[];
+
+	//find the shape node[s] of $ctrl
+	$shapes = `listRelatives -shapes -path $ctrl`;
+	
+	for ($shape in $shapes)
+	{
+		//checks if nodetype is a nurbs curve
+		if (`nodeType $shape` == "nurbsCurve"){
+			//enable overrides on $shape
+			setAttr ($shape + ".overrideEnabled") 1;
+
+			//set color on $shape to $color
+			setAttr($shape + ".overrideColor") $color;	
+		}
+		else
+		{
+			warning("Selected object is not a curve.");
+		}
+	}
+}
+
+global proc MoveControls (string $moved, string $sel){
+	//moves control groups to their proper places/rotations
+	if($sel != ""){
+	//matches the transforms of the thing moved to the selection
+	matchTransform $moved $sel;
+	}else{
+		objectMoveCommand;
+	}
+}
+
+global proc GroupControls (string $ctrl, string $sel){
+	//makes control groups
+	
+	//groups controls 
+	string $moved = `group	-world -name ($ctrl + "_Grp") $ctrl`;
+	MoveControls($moved, $sel);
+}
+
+global proc string ShapeControl(string $controlShape, string $name){
+	//changes control shape
+	string $shape[];
+	//checks if it's a circle input
+	if ($controlShape == "Circle"){
+	$shape = `circle -c 0 0 0 -nr 0 1 0 -sw 360 -r 1 -d 3 -ut 0 -tol 0.01 -s 8 -ch 1 -name $name`; 
+	//checks if it's a Square input
+	}else if($controlShape == "Square"){
+	$shape[0] = `curve -d 1 -p -0.5 0 3.470844 -p -0.5 0 4.470843 -p 0.5 0 4.470843 -p 0.5 0 3.470844 -p -0.5 0 3.470844 -k 0 -k 1 -k 2 -k 3 -k 4 -name $name`;
+	//checks if it's a Diamond input
+	}else if($controlShape == "Diamond"){
+	$shape[0] = `curve -d 1 -p 0 0 3.36644 -p -0.366504 0 3.970844 -p 0 0 4.575247 -p 0.366504 0 3.970844 -p 0 0 3.36644 -k 0 -k 1 -k 2 -k 3 -k 4 -name $name`;
+	//checks if it's a Flower input
+	}else if($controlShape == "Flower"){
+	$shape[0] = `curve -d 3 -p 0.00316829 0 6.090031 -p -0.0454706 0 6.194755 -p -0.142748 0 6.404202 -p -0.0532278 0 6.752826 -p 0.331597 0 6.885565 -p 0.81247 0 6.724864 -p 0.334751 0 6.552492 -p -0.0433585 0 6.704744 -p -0.161316 0 6.953625 -p 0.00643457 0 7.556084 -p 0.170806 0 7.038393 -p 0.0276257 0 6.683013 -p -0.281309 0 6.554645 -p -0.819014 0 6.726818 -p -0.256067 0 6.87748 -p 0.0224327 0 6.77186 -p 0.166336 0 6.360172 -p 0.0575577 0 6.180078 -p 0.00316829 0 6.090032 -k 0 -k 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16 -k 16 -k 16 -name $name`;
+	//checks if it's a wrong or missing input
+	}else{
+		warning ("Shape does not exist");
+	}
+	return $shape[0];
+}
+
+ControlCreatorUI();
