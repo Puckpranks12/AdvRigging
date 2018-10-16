@@ -1,3 +1,44 @@
+global proc ToolKitUI()
+{
+	string $topWindow = "UIWindow";
+
+	if(`window -exists $topWindow`)
+	{
+		deleteUI $topWindow;
+	}
+
+	$topWindow = `window -title "Toolkit" $topWindow`;
+	string $mainCol = `columnLayout -parent $topWindow -adjustableColumn 1`;
+
+		//create a button to execute the command
+	string $button = `button -parent $mainCol -label "Random Placement" -command "GeneratorUI"`;
+	string $button1 = `button -parent $mainCol -label "Rename" -command "RenamerUI"`;
+	string $button2 = `button -parent $mainCol -label "Create Controls" -command "ControlCreatorUI"`;
+	
+	showWindow $topWindow;
+}
+
+/*
+*/
+
+global proc int GetIntFieldValue (string $control)
+{
+	int $value = `intField -query -value $control`;
+	return $value;	
+}
+
+global proc string GetTextFieldValue (string $control)
+{
+	string $value = `textField -query -text $control`;
+	return $value;	
+}
+
+global proc float GetFloatFieldValue (string $control)
+{
+	float $value = `floatField -query -value $control`;
+	return $value;	
+}
+
 global proc GeneratorUI()
 {
 	string $mainWindow = "RandomPlacementWindow";
@@ -47,18 +88,6 @@ global proc string[] DuplicateObjects(int $dupNum) {
     return $Items;
 }
 
-global proc float GetFloatFieldValue (string $control)
-{
-	float $value = `floatField -query -value $control`;
-	return $value;	
-}
-
-global proc int GetIntFieldValue (string $control)
-{
-	int $value = `intField -query -value $control`;
-	return $value;	
-}
-
 global proc MoveDuplicates(string $numDup, string $xName, string $yName, string $zName) {
     int $numberDup = `GetIntFieldValue ($numDup)`;
 	string $dupes[] = `DuplicateObjects($numberDup)`;
@@ -75,12 +104,8 @@ global proc MoveDuplicates(string $numDup, string $xName, string $yName, string 
     }
 }
 
-GeneratorUI();
-
-
 /*
 */
-
 
 global proc RenamerUI()
 {
@@ -108,18 +133,6 @@ global proc RenamerUI()
 	string $button = `button -parent $mainCol -label "Rename" -command ("renamer(\"" + $numIntField + "\", \"" + $newName + "\")")`;
 	
 	showWindow $mainWindow;
-}
-
-global proc int GetIntFieldValue (string $control)
-{
-	int $value = `intField -query -value $control`;
-	return $value;	
-}
-
-global proc string GetTextFieldValue (string $control)
-{
-	string $value = `textField -query -text $control`;
-	return $value;	
 }
 
 global proc renamer(string $number, string $split){
@@ -153,8 +166,6 @@ global proc renamer(string $number, string $split){
     }
 }
 
-RenamerUI();
-
 /*
 */
 
@@ -184,19 +195,6 @@ global proc ControlCreatorUI()
 	string $button = `button -parent $mainCol -label "Create Controls" -command ("CreateControls(\"" + $colorIntField + "\", \"" + $shapeName + "\")")`;
 	
 	showWindow $mainWindow;
-}
-
-
-global proc int GetIntFieldValue (string $control)
-{
-	int $value = `intField -query -value $control`;
-	return $value;	
-}
-
-global proc string GetTextFieldValue (string $control)
-{
-	string $value = `textField -query -text $control`;
-	return $value;	
 }
 
 global proc CreateControls(string $color, string $shape){
@@ -287,4 +285,4 @@ global proc string ShapeControl(string $controlShape, string $name){
 	return $shape[0];
 }
 
-ControlCreatorUI();
+ToolKitUI();
