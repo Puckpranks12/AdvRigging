@@ -20,25 +20,17 @@ cmds.scale (4.37802, 1, 4.37802, obj2, r=True)
 cmds.select ("Wheel_Geo.f[8:15]", r=True)
 cmds.polyExtrudeFacet ("Wheel_Geo.f[8:15]", constructionHistory=1, keepFacesTogether=1, pvx=7.902812, pvy=-1.805157739, pvz=4.55712313, divisions=1, twist=0, taper=1, off=0, thickness=0, smoothingAngle=30)
 cmds.scale (0.415771, 1, 0.415771)
-cmds.select ("Wheel_Geo.f[8:15]" r=True)
+cmds.select ("Wheel_Geo.f[8:15]", r=True)
 cmds.polyExtrudeFacet ("Wheel_Geo.f[8:15]", constructionHistory=1, keepFacesTogether=1, pvx=7.902812, pvy=-1.805158, pvz=4.557123, divisions=1, twist=0, taper=1, off=0, thickness=0, smoothingAngle=30)
-
-cmds.setAttr ("polyExtrudeFace2.localTranslate" type=double[3, 0, 0, -1.147426]
-
+cmds.setAttr ("polyExtrudeFace2.localTranslate", 0, 0, -1.147426, type="double3")
 cmds.select ("Wheel_Geo", r=True)
 cmds.duplicate (rr=True)
 cmds.move (0, 0, -9.484245, r=True)
-cmds.select ("Wheel_Geo", r=True)
-
-cmds.select (tgl=Wheel_Geo1)
-
+cmds.select ("Wheel_Geo", "Wheel_Geo1", r=True)
 cmds.duplicate (rr=True)
 cmds.move (-13.879012, 0, 0, r=True)
-cmds.select ("Wheel_Geo2", r=True)
-
-cmds.select (tgl=Wheel_Geo3)
-
-cmds.rotate (r -os fo=[0, 0, 180])
+cmds.select ("Wheel_Geo2", "Wheel_Geo3", r=True)
+cmds.rotate (0, 0, 180, r=True, os=True, fo=True)
 
 obj3 = cmds.polySphere (r=1, sx=20, sy=20, ax=[0, 1, 0], cuv=2, ch=1, name="Windshield_Geo")
 cmds.setAttr ("polySphere1.subdivisionsAxis", 8)
@@ -52,23 +44,15 @@ cmds.move (0, -0.331939, 0, r=True)
 obj4 = cmds.polyCone (r=1, h=2, sx=20, sy=1, sz=0, ax=[0, 1, 0], rcp=0, cuv=3, ch=1, name="Front_Spike_Geo")
 cmds.setAttr ("polyCone1.subdivisionsAxis", 8)
 cmds.setAttr ("Front_Spike_Geo.rotateX", 90)
-
 cmds.move (0, 0, 7.408706, r=True)
 cmds.scale (3.439762, 3.439762, 3.439762, obj4, r=True)
 cmds.move (0, 0, 2.153823, r=True)
 cmds.select ("Body_Geo.f[6:8]", r=True)
 cmds.polyExtrudeFacet ("Body_Geo.f[6:8]", constructionHistory=1, keepFacesTogether=1, pvx=0, pvy=0, pvz=-6.511116138, divisions=1, twist=0, taper=1, off=0, thickness=0, smoothingAngle=30)
-
-cmds.setAttr "polyExtrudeFace3.localTranslate" -type double3 0 0 5.317829 ;
-
-cmds.rotate -r -eu -p 0cm 0cm -11.828945cm -fo 35.674137 0 0 ;
-
+cmds.setAttr ("polyExtrudeFace3.localTranslate", 0, 0, 5.317829, type="double3")
+cmds.rotate (35.674137, 0, 0, r=True, eu=True, p=[0, 0, -11.828945], fo=True)
 cmds.polyExtrudeFacet ("Body_Geo.f[2]", constructionHistory=1, keepFacesTogether=1, pvx=0, pvy=0, pvz=-6.511116138, divisions=1, twist=0, taper=1, off=0, thickness=0, smoothingAngle=30)
-cmds.select ("Windshield_Geo", r=True)
-
-cmds.select -tgl Front_Spike_Geo ;
-cmds.select -tgl Body_Geo ;
-
+cmds.select ("Windshield_Geo", "Front_Spike_Geo", "Body_Geo", r=True)
 cmds.move (0, 0, 2.747234, r=True)
 
 obj5 = cmds.polyCone (r=1, h=2, sx=20, sy=1, sz=0, ax=[0, 1, 0], rcp=0, cuv=3, ch=1, name="Wheel_Spike_Geo")
@@ -81,89 +65,65 @@ cmds.duplicate (rr=True)
 cmds.move (0, 2.821105, 3.204342, r=True)
 cmds.duplicate (rr=True)
 cmds.move (0, 0, -5.816862, r=True)
-select -r Wheel_Spike_Geo3 Wheel_Spike_Geo2 Wheel_Spike_Geo1 Wheel_Spike_Geo ;
-duplicate -rr;
-move -r 0 0 -9.609049 ;
-select -r Wheel_Spike_Geo Wheel_Spike_Geo1 Wheel_Spike_Geo2 Wheel_Spike_Geo3 Wheel_Spike_Geo4 Wheel_Spike_Geo5 Wheel_Spike_Geo6 Wheel_Spike_Geo7 ;
-duplicate -rr;
-move -r -16.36526 0 0 ;
-rotate -r -os -fo 0 0 180 ;
-move -r -0.799466 0 0 ;
-select -r Body_Geo ;
-select -add Body_Geo.e[0:19] ;
-select -r Body_Geo.f[19] ;
-select -tgl Body_Geo.f[14] ;
-select -r Body_Geo.f[14] Body_Geo.f[19] ;
-polyExtrudeFacet -constructionHistory 1 -keepFacesTogether 1 -pvx 0 -pvy 3.204711255 -pvz -5.391588211 -divisions 1 -twist 0 -taper 1 -off 0 -thickness 0 -smoothingAngle 30 Body_Geo.f[14] Body_Geo.f[19];
-setAttr "polyExtrudeFace5.localTranslate" -type double3 0 0 8.003654 ;
-move -r 0 0 -6.760178 ;
-rotate -r -eu -p 0cm 11.047068cm -13.750492cm -fo 48.566903 0 0 ;
-select -r Wheel_Spike_Geo Wheel_Spike_Geo1 Wheel_Spike_Geo2 Wheel_Spike_Geo3 ;
-doGroup 0 1 1;
-select -r group1 ;
-rename "group1" "Front_Left_Wheel_Spikes";
-select -r Wheel_Spike_Geo4 Wheel_Spike_Geo5 Wheel_Spike_Geo6 Wheel_Spike_Geo7 ;
-doGroup 0 1 1;
-select -r group1 ;
-rename "group1" "Back_Left_Wheel_Spikes";
-select -r Wheel_Spike_Geo8 Wheel_Spike_Geo9 Wheel_Spike_Geo10 Wheel_Spike_Geo11 ;
-doGroup 0 1 1;
-select -r group1 ;
-rename "group1" "Front_Right_Wheel_Spikes";
-select -r Wheel_Spike_Geo15 Wheel_Spike_Geo14 Wheel_Spike_Geo13 Wheel_Spike_Geo12 ;
-doGroup 0 1 1;
-select -r group1 ;
-rename "group1" "Back_Right_Wheel_Spikes";
-select -r Wheel_Geo ;
-rename "Wheel_Geo" "Front_Left_Wheel_Geo";
-select -r Wheel_Geo1 ;
-rename "Wheel_Geo1" "Back_Left_Wheel_Geo";
-select -r Wheel_Geo2 ;
-rename "Wheel_Geo2" "Front_Right_Wheel_Geo";
-select -r Wheel_Geo3 ;
-rename "Wheel_Geo3" "Back_Right_Wheel_Geo";
-select -r Front_Left_Wheel_Spikes ;
-parent Front_Left_Wheel_Spikes Front_Left_Wheel_Geo ;
-select -r Back_Left_Wheel_Spikes ;
-parent Back_Left_Wheel_Spikes Back_Left_Wheel_Geo ;
-select -r Front_Right_Wheel_Spikes ;
-parent Front_Right_Wheel_Spikes Front_Right_Wheel_Geo ;
-select -r Back_Right_Wheel_Spikes ;
-parent Back_Right_Wheel_Spikes Back_Right_Wheel_Geo ;
-select -r Front_Axel_Geo1 ;
-rename "Front_Axel_Geo1" "Back_Axel_Geo";
-select -r Front_Left_Wheel_Geo Front_Right_Wheel_Geo ;
-parent Front_Right_Wheel_Geo Front_Axel_Geo ;
-parent Front_Left_Wheel_Geo Front_Axel_Geo ;
-select -r Back_Left_Wheel_Geo ;
-select -add Back_Right_Wheel_Geo ;
-parent Back_Left_Wheel_Geo Back_Axel_Geo ;
-parent Back_Right_Wheel_Geo Back_Axel_Geo ;
-select -r Front_Axel_Geo ;
-select -add Back_Axel_Geo ;
-select -add Windshield_Geo ;
-select -add Front_Spike_Geo ;
-parent Front_Axel_Geo Body_Geo ;
-parent Back_Axel_Geo Body_Geo ;
-parent Windshield_Geo Body_Geo ;
-parent Front_Spike_Geo Body_Geo ;
-select -r Body_Geo ;
-doGroup 0 1 1;
-select -r group1 ;
-rename "group1" "Geo";
-select -r Geo ;
-doGroup 0 1 1;
-select -r group1 ;
-rename "group1" "Racecar";
+cmds.select ("Wheel_Spike_Geo3", "Wheel_Spike_Geo2", "Wheel_Spike_Geo1", "Wheel_Spike_Geo", r=True)
+cmds.duplicate (rr=True)
+cmds.move (0, 0, -9.609049, r=True)
+cmds.select ("Wheel_Spike_Geo", "Wheel_Spike_Geo1", "Wheel_Spike_Geo2", "Wheel_Spike_Geo3", "Wheel_Spike_Geo4", "Wheel_Spike_Geo5", "Wheel_Spike_Geo6", "Wheel_Spike_Geo7", r=True)
+cmds.duplicate (rr=True)
+cmds.move (-16.36526, 0, 0, r=True)
+cmds.rotate (0, 0, 180, r=True, os=True, fo=True)
+cmds.move (-0.799466, 0, 0, r=True)
+cmds.select ("Body_Geo", "Body_Geo.e[0:19]", "Body_Geo.f[19]", "Body_Geo.f[14]", "Body_Geo.f[19]", r=True)
+cmds.polyExtrudeFacet ( "Body_Geo.f[14]", "Body_Geo.f[19]", constructionHistory=1, keepFacesTogether=1, pvx=0, pvy=3.204711255, pvz=-5.391588211, divisions=1, twist=0, taper=1, off=0, thickness=0, smoothingAngle=30)
+cmds.setAttr ("polyExtrudeFace5.localTranslate", 0, 0, 8.003654, type="double3")
+cmds.move (0, 0, -6.760178, r=True)
+cmds.rotate (48.566903, 0, 0, "Body_Geo.f[14]", "Body_Geo.f[19]", r=True, eu=True, p=[0, 11.047068, -13.750492], fo=True)
 
+cmds.group("Wheel_Spike_Geo", "Wheel_Spike_Geo1", "Wheel_Spike_Geo2", "Wheel_Spike_Geo3")
+cmds.select ("group1", r=True)
+cmds.rename ("group1", "Front_Left_Wheel_Spikes")
+cmds.group("Wheel_Spike_Geo4", "Wheel_Spike_Geo5", "Wheel_Spike_Geo6", "Wheel_Spike_Geo7")
+cmds.select ("group1", r=True)
+cmds.rename ("group1", "Back_Left_Wheel_Spikes")
+cmds.group("Wheel_Spike_Geo8", "Wheel_Spike_Geo9", "Wheel_Spike_Geo10", "Wheel_Spike_Geo11")
+cmds.select ("group1", r=True)
+cmds.rename ("group1", "Front_Right_Wheel_Spikes")
+cmds.group("Wheel_Spike_Geo15", "Wheel_Spike_Geo14", "Wheel_Spike_Geo13", "Wheel_Spike_Geo12")
+cmds.select ("group1", r=True)
+cmds.rename ("group1", "Back_Right_Wheel_Spikes")
+cmds.select ("Wheel_Geo", r=True)
+cmds.rename ("Wheel_Geo", "Front_Left_Wheel_Geo")
+cmds.select ("Wheel_Geo1", r=True)
+cmds.rename ("Wheel_Geo1", "Back_Left_Wheel_Geo")
+cmds.select ("Wheel_Geo2", r=True)
+cmds.rename ("Wheel_Geo2", "Front_Right_Wheel_Geo")
+cmds.select ("Wheel_Geo3", r=True)
+cmds.rename ("Wheel_Geo3", "Back_Right_Wheel_Geo")
+cmds.select ("Front_Left_Wheel_Spikes", r=True)
+cmds.parent ("Front_Left_Wheel_Spikes", "Front_Left_Wheel_Geo")
+cmds.select ("Back_Left_Wheel_Spikes", r=True)
+cmds.parent ("Back_Left_Wheel_Spikes", "Back_Left_Wheel_Geo")
+cmds.select ("Front_Right_Wheel_Spikes", r=True)
+cmds.parent ("Front_Right_Wheel_Spikes", "Front_Right_Wheel_Geo")
+cmds.select ("Back_Right_Wheel_Spikes", r=True)
+cmds.parent ("Back_Right_Wheel_Spikes", "Back_Right_Wheel_Geo")
+cmds.select ("Front_Axel_Geo1", r=True)
+cmds.rename ("Front_Axel_Geo1", "Back_Axel_Geo")
+cmds.select ("Front_Left_Wheel_Geo", "Front_Right_Wheel_Geo", r=True)
+cmds.parent ("Front_Right_Wheel_Geo", "Front_Axel_Geo")
+cmds.parent ("Front_Left_Wheel_Geo", "Front_Axel_Geo")
+cmds.select ("Back_Left_Wheel_Geo", "Back_Right_Wheel_Geo", r=True)
+cmds.parent ("Back_Left_Wheel_Geo", "Back_Axel_Geo")
+cmds.parent ("Back_Right_Wheel_Geo", "Back_Axel_Geo")
+cmds.select ("Front_Axel_Geo", "Back_Axel_Geo", "Windshield_Geo", "Front_Spike_Geo", r=True)
+cmds.parent ("Front_Axel_Geo", "Body_Geo")
+cmds.parent ("Back_Axel_Geo", "Body_Geo")
+cmds.parent ("Windshield_Geo", "Body_Geo")
+cmds.parent ("Front_Spike_Geo", "Body_Geo")
+cmds.group ("Body_Geo")
+cmds.select ("group1", r=True)
+cmds.rename ("group1", "Geo")
+cmds.group ("Geo")
+cmds.select ("group1", r=True)
 
-
-
-
-
-#import maya.cmds as cmds
-
-#sels = cmds.ls(sl=True)
-
-#for sel in sels:
-#    cmds.connectAttr('Snake_IK_Spline_Joint_Scale_MD.outputX', '%s.translateX' % sel, f=True)
+cmds.rename ("group1", "Racecar")
