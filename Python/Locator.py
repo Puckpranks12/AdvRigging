@@ -42,10 +42,3 @@ def CreateLocPivot(option=1):  #putting the option=1 makes it so it's always 1 u
 
 CreateLocPivot()
 
-#Create Locator at Component(Such as a face or a point)
-
-def CreateLocComp():
-
-
-
-CreateLocComp()
