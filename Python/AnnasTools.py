@@ -1,9 +1,12 @@
+'''
 import maya.cmds as cmds
 import random
 #Anna's. No theft pls.
 
+
+
 def LocWindowMaker():
-    '''Create a window.'''
+    #Create a window.
     locWin = "LocWindow"
 
     if cmds.window(locWin, exists = True):
@@ -19,7 +22,7 @@ def LocWindowMaker():
     cmds.showWindow(locWin)
 
 def RandWindowMaker():
-    '''Create a window.'''
+    #Create a window.
     randWin = "RandWindow"
 
     if cmds.window(randWin, exists = True):
@@ -35,7 +38,7 @@ def RandWindowMaker():
     cmds.showWindow(randWin)
 
 def RenameWindowMaker():
-    '''Create a window.'''
+    #Create a window.
     renameWin = "RenameWindow"
 
     if cmds.window(renameWin, exists = True):
@@ -51,7 +54,7 @@ def RenameWindowMaker():
     cmds.showWindow(renameWin)
 
 def CtrlWindowMaker():
-    '''Create a window.'''
+    #Create a window.
     ctrlWin = "CtrlWindow"
 
     if cmds.window(ctrlWin, exists = True):
@@ -67,7 +70,7 @@ def CtrlWindowMaker():
     cmds.showWindow(ctrlWin)
 
 def JntWindowMaker():
-    '''Create a window.'''
+    #Create a window.
     jntWin = "JntWindow"
 
     if cmds.window(jntWin, exists = True):
@@ -83,7 +86,7 @@ def JntWindowMaker():
     cmds.showWindow(jntWin)
 
 def WindowMaker():
-    '''Create a window.'''
+    #Create a window.
     mWin = "MainWindow"
 
     if cmds.window(mWin, exists = True):
@@ -102,6 +105,7 @@ def WindowMaker():
 
 WindowMaker()
 
+#Create Locators
 def CreateLoc(option=1):
     sels = cmds.ls(sl=True)
 
@@ -123,6 +127,7 @@ def CreateLoc(option=1):
             loc = cmds.spaceLocator() [0]
             cmds.xform(loc, translation=pivot, worldSpace=True)
 
+#Random Placement
 def Selection():
     sels = cmds.ls(sl=True)
     objects = sels[0]
@@ -150,7 +155,7 @@ def MoveDuplicates(numDup, xRange, yRange, zRange):
         z = random.randrange(-zRange, zRange)
         cmds.move(x, y, z, things, r=True)
 
-
+#Renamer
 def Renamer(number, split):
     sels = cmds.ls(sl=True)
     num = []
@@ -174,6 +179,7 @@ def Renamer(number, split):
 
         number += 1
 
+#Create Controls
 def CreateControls(colour, shape):
     sels = cmds.ls(sl=True)
     if len(sels) >= 1:
@@ -257,10 +263,89 @@ def ShapeControl(controlShape, name):
     cmds.move(0, 0, 0, rpr=True)
     return shape
 
-
+#Create Joints
 def createJoints():
     sels = cmds.ls(sl=True)
     cmds.select(cl=True)
     for sel in sels:
         jnt = cmds.joint(p=[0, 0, 0])
         cmds.matchTransform(jnt, sel)
+'''
+import maya.cmds as cmds
+import random
+#Anna's. No theft pls.
+
+
+class LocatorTool():
+    def __init__(self):
+        self.mWin = 'LocWindow'
+
+    def create(self):
+        self.delete()
+
+        self.mWin = cmds.window(self.mWin, title='Create Locator')
+        mCol = cmds.columnLayout(parent=self.mWin, adjustableColumn=True)
+        self.dropCtrl = cmds.optionMenu(parent=mCol, label='Type')
+        cmds.menuItem(parent=self.dropCtrl, label='Bounding Box')
+        cmds.menuItem(parent=self.dropCtrl, label='PivotPoint')
+        cmds.button(parent=mCol, label='Create Locator',
+                    c=lambda x: self.create_loc(cmds.optionMenu(self.dropCtrl, q=True, select=True)))
+
+
+        cmds.showWindow(self.mWin)
+
+    def delete(self):
+        if cmds.window(self.mWin, exists=True):
+            cmds.deleteUI(self.mWin)
+
+    def create_loc(self, option):
+
+        sels = cmds.ls(sl=True)
+
+        if option is 1:
+            dups = cmds.duplicate(sels, rr=True)
+            dups = cmds.polyUnite(dups, ch=True, mergeUVSets=True, centerPivot=True)[0]
+            bbox = cmds.xform(dups, boundingBox=True, q=True)
+            pivot = [(bbox[0] + bbox[3]) / 2, (bbox[1] + bbox[4]) / 2, (bbox[2] + bbox[5]) / 2]
+
+            cmds.delete(dups, ch=True)
+            cmds.delete(dups)
+
+            loc = cmds.spaceLocator()[0]
+            cmds.xform(loc, translation=pivot, worldSpace=True)
+
+        elif option is 2:
+            for sel in sels:
+                pivot = cmds.xform(sel, q=True, rp=True, ws=True)
+                loc = cmds.spaceLocator()[0]
+                cmds.xform(loc, translation=pivot, worldSpace=True)
+
+LocatorTool()
+
+
+
+
+class RenamerUI():
+    def __init__(self):
+        self.mWindow = "RenamerWindow"
+
+    def create(self):
+        self.delete()
+
+        self.mWindow = cmds.window(self.mWindow, title='Renamer')
+        self.mCol = cmds.columnLayout(parent = self.mWindow, adjustableColumn=True)
+        self.nameField = cmds.textField(placeholderText='Enter new name')
+        self.value = cmds.textField(self.nameField, q=True, value=True)
+        cmds.textField(self.nameField, e=True, enterCommand=lambda x: self.rename_objects(value))
+
+    def delete(self):
+        if cmds.window(self.mWindow, q=True, exists=True):
+            cmds.deleteUI(self.mWindow)
+
+    def rename_objects(self, name):
+        sels = cmds.ls(sl=True)
+        for sel, i in enumerate(sels):
+            newName = "%s_%i" % (name, i)
+            cmds.rename(sel, newName)
+
+

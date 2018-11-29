@@ -52,7 +52,16 @@ def CreateLoc(option=1):
 #if the attribute has self. in front of it, you can change it in another class
 # without changing the base template.
 #otherwise if you change it, it'll change the attribute in the base template
+
 '''
+cmds.textField( name, edit=True, enterCommand=('cmds.setFocus(\"' + address + '\")') )
+
+
+
+
+
+
+
 import maya.cmds as cmds
 
 
