@@ -11,3 +11,6 @@ import toolbox
 reload(toolbox)
 mytool = toolbox.Toolbox()
 mytool.create()
+
+if'C:/Users/anna/Desktop/Scripts' not in sys.path:
+    sys.path.append('C:/Users/anna/Desktop/Scripts')

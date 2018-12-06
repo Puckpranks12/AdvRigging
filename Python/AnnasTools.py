@@ -3,8 +3,6 @@ import maya.cmds as cmds
 import random
 #Anna's. No theft pls.
 
-
-
 def LocWindowMaker():
     #Create a window.
     locWin = "LocWindow"
@@ -276,7 +274,46 @@ import random
 #Anna's. No theft pls.
 
 
-class LocatorTool():
+class Toolbox():
+	def __init__ (self):
+		self.mWin = 'ToolboxWindow'
+		
+	def create(self):
+		self.delete()
+		self.mWin = cmds.window(self.mWin, title='Create Toolbox')
+        self.mCol = cmds.columnLayout(parent=self.mWin, adjustableColumn=True)
+		
+		cmds.button(parent=self.mCol, label='Locator Creator', command=lambda args: self.locator())
+		cmds.button(parent=self.mCol, label='Renamer', command=lambda args: self.renamer())
+		cmds.button(parent=self.mCol, label='Joints Creator', command=lambda args: self.joints())
+		cmds.button(parent=self.mCol, label='Random Generator', command=lambda args: self.random())
+		cmds.button(parent=self.mCol, label='Control Creator', command=lambda args: self.controls())
+	
+	def delete(self):
+        if cmds.window(self.mWin, exists=True):
+            cmds.deleteUI(self.mWin)
+
+	def locator(self):
+		loc = LocatorUI()
+		loc.create()
+		
+	def renamer(self):
+		renam = RenamerUI()
+		renam.create()
+		
+	def joints(self):
+		jnt = JointUI()
+		jnt.create()
+		
+	def random(self):
+		rand = RandomUI()
+		rand.create()
+		
+	def controls(self):
+		ctrl = ControlsUI()
+		ctrl.create()
+
+class LocatorUI():
     def __init__(self):
         self.mWin = 'LocWindow'
 
@@ -284,8 +321,8 @@ class LocatorTool():
         self.delete()
 
         self.mWin = cmds.window(self.mWin, title='Create Locator')
-        mCol = cmds.columnLayout(parent=self.mWin, adjustableColumn=True)
-        self.dropCtrl = cmds.optionMenu(parent=mCol, label='Type')
+        self.mCol = cmds.columnLayout(parent=self.mWin, adjustableColumn=True)
+        self.dropCtrl = cmds.optionMenu(parent=self.mCol, label='Type')
         cmds.menuItem(parent=self.dropCtrl, label='Bounding Box')
         cmds.menuItem(parent=self.dropCtrl, label='PivotPoint')
         cmds.button(parent=mCol, label='Create Locator',
@@ -320,10 +357,6 @@ class LocatorTool():
                 loc = cmds.spaceLocator()[0]
                 cmds.xform(loc, translation=pivot, worldSpace=True)
 
-LocatorTool()
-
-
-
 
 class RenamerUI():
     def __init__(self):
@@ -349,3 +382,85 @@ class RenamerUI():
             cmds.rename(sel, newName)
 
 
+
+class JointUI():
+	def __init__(self):
+		self.jntWin = "JointWindow"
+		
+	def create(self):
+		self.delete()
+	
+		self.jntWin = cmds.window(self.jntWin, title='Create Joints')
+		self.jntCol = cmds.columnLayout(parent=self.jntWin, adjustableColumn=True)
+		
+		cmds.button(parent=self.jntCol, label='Create Joints', command=lambda args: self.generate())
+
+		cmds.showWindow(self.jntWin)
+
+    def delete(self):
+        if cmds.window(self.jntWin, q=True, exists=True):
+            cmds.deleteUI(self.jntWin)
+			
+	def generate(self):
+		import JointCreator
+		reload (JointCreator)
+		Joint=JointCreator.jnts()
+		jnts.createJoints()
+		
+class RandomUI():
+	def __init__ (self):
+		self.randWindow = "RandomWindow"
+		
+	def create(self):
+		self.delete()
+		self.randWin = cmds.window(self.randWin, title='Random Generator')
+		self.randCol = cmds.columnLayout(parent=self.randWin, adjustableColumn=True)
+
+		cmds.text(parent=self.randCol, label='Locator Type:')
+		self.floatgrp = cmds.floatFieldGrp(parent=self.randCol, nf=4)
+		cmds.button(parent=self.randCol, label='create', command=lambda args: self.generate(self.floatgrp))
+
+		cmds.showWindow(self.randWin)
+			
+	def delete(self):
+        if cmds.window(self.randWin, q=True, exists=True):
+            cmds.deleteUI(self.randWin)	
+
+	def generate(self, floatgrp):
+		values=cmds.floatFieldGrp(floatgrp, q=True, value=True)
+		import RandomPlacement
+		reload(RandomPlacement)
+		randomclass = RandomPlacement.RandomPlacement()
+		randomclass.MoveDuplicates(values[0], values[1], values[2], values[3])
+
+class ControlsUI():
+	def __init__ (self):
+		self.ctrlWin = "ControlsWindow"
+		
+	def create(self):
+		self.delete()
+		self.ctrlWin = cmds.window(self.ctrlWin, title='Create Controls')
+		self.ctrlCol = cmds.columnLayout(parent=self.ctrlWin, adjustableColumn=True)
+
+		txtgrp=cmds.textFieldGrp(parent=self.ctrlCol, label='Control Shape')
+		intgrp=cmds.intFieldGrp(parent=self.ctrlCol, label='color number')
+		cmds.button(parent=self.ctrlCol, label='Bounding Box', command=lambda args: self.generate(txtgrp, intgrp))
+
+		cmds.showWindow(self.ctrlWin)
+		
+	def delete(self):
+        if cmds.window(self.ctrlWin, q=True, exists=True):
+            cmds.deleteUI(self.ctrlWin)	
+			
+	def generate(self, textGrp, intGrp)
+		txtvalues=cmds.textFieldGrp(textGrp, q=True, text=True)
+		values=cmds.intFieldGrp(intGrp, q=True, value=True)
+		import ControlCreator
+		reload(ControlCreator)
+		controlClass=ControlCreator.controls()
+		controls.CreateControls(values, txtvalues)
+			
+		
+		
+		
+		
