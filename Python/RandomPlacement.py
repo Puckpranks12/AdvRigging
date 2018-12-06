@@ -4,12 +4,11 @@ import random
 class RandomPlacement:
 	def __init__ (self):
 		pass
-		
+
 	def Selection(self):
 		sels = cmds.ls(sl=True)
 		objects = sels[0]
 		return objects
-
 
 	def DuplicateObjects(self, dupNum):
 		obj = self.Selection()
