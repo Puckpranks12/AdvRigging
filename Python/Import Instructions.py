@@ -1,12 +1,4 @@
-'''Import the scripts into the Maya system using this script'''
-
-import sys
-
-if'C:/Users/10734984/Desktop/Scripts' not in sys.path:
-    sys.path.append('C:/Users/10734984/Desktop/Scripts')
-
-for s in sys.path:
-    print s
+'''Put the scripts in the Maya scripts folder before you run this code.'''
 
 import AnnasTools
 reload(AnnasTools)
